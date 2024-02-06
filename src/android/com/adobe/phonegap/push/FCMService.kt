@@ -444,12 +444,19 @@ class FCMService : FirebaseMessagingService() {
     }
     val random = SecureRandom()
     var requestCode = random.nextInt()
-    val contentIntent = PendingIntent.getActivity(
+    val contentIntent = if (Build.VERSION.SDK_INT >= 23) { PendingIntent.getActivity(
       this,
       requestCode,
       notificationIntent,
-      PendingIntent.FLAG_UPDATE_CURRENT
-    )
+      PendingIntent.FLAG_UPDATE_CURRENT | PendingIntent.FLAG_IMMUTABLE
+    ) } else {
+      PendingIntent.getActivity(
+            this,
+            requestCode,
+            notificationIntent,
+            PendingIntent.FLAG_UPDATE_CURRENT
+          )
+    }
     val dismissedNotificationIntent = Intent(
       this,
       PushDismissedHandler::class.java
@@ -463,12 +470,19 @@ class FCMService : FirebaseMessagingService() {
 
     requestCode = random.nextInt()
 
-    val deleteIntent = PendingIntent.getBroadcast(
+    val deleteIntent = if (Build.VERSION.SDK_INT >= 23) { PendingIntent.getBroadcast(
       this,
       requestCode,
       dismissedNotificationIntent,
-      PendingIntent.FLAG_CANCEL_CURRENT
-    )
+      PendingIntent.FLAG_CANCEL_CURRENT | PendingIntent.FLAG_IMMUTABLE
+    ) } else {
+    PendingIntent.getBroadcast(
+          this,
+          requestCode,
+          dismissedNotificationIntent,
+          PendingIntent.FLAG_CANCEL_CURRENT
+        )
+    }
 
     val mBuilder: NotificationCompat.Builder =
       createNotificationBuilder(extras, mNotificationManager)
@@ -672,42 +686,73 @@ class FCMService : FirebaseMessagingService() {
               pIntent = if (Build.VERSION.SDK_INT <= Build.VERSION_CODES.M) {
                 Log.d(TAG, "push activity for notId $notId")
 
+if (Build.VERSION.SDK_INT >= 23) {
+                PendingIntent.getActivity(
+                  this,
+                  uniquePendingIntentRequestCode,
+                  intent,
+                  PendingIntent.FLAG_ONE_SHOT | PendingIntent.FLAG_IMMUTABLE
+                )
+} else {
                 PendingIntent.getActivity(
                   this,
                   uniquePendingIntentRequestCode,
                   intent,
                   PendingIntent.FLAG_ONE_SHOT
                 )
+}
+
               } else {
                 Log.d(TAG, "push receiver for notId $notId")
 
-                PendingIntent.getBroadcast(
-                  this,
-                  uniquePendingIntentRequestCode,
-                  intent,
-                  PendingIntent.FLAG_ONE_SHOT
-                )
+              if (Build.VERSION.SDK_INT >= 23) {
+                  PendingIntent.getBroadcast(
+                    this,
+                    uniquePendingIntentRequestCode,
+                    intent,
+                    PendingIntent.FLAG_ONE_SHOT | PendingIntent.FLAG_IMMUTABLE
+                  )
+                } else {
+                  PendingIntent.getBroadcast(
+                    this,
+                    uniquePendingIntentRequestCode,
+                    intent,
+                    PendingIntent.FLAG_ONE_SHOT
+                  )
+                }
               }
             }
 
             foreground -> {
               intent = Intent(this, PushHandlerActivity::class.java)
               updateIntent(intent, callback, extras, foreground, notId)
-              pIntent = PendingIntent.getActivity(
+              pIntent = if (Build.VERSION.SDK_INT >= 23) { PendingIntent.getActivity(
                 this, uniquePendingIntentRequestCode,
                 intent,
-                PendingIntent.FLAG_UPDATE_CURRENT
-              )
+                PendingIntent.FLAG_UPDATE_CURRENT | PendingIntent.FLAG_IMMUTABLE
+              ) } else {
+                PendingIntent.getActivity(
+                  this, uniquePendingIntentRequestCode,
+                  intent,
+                  PendingIntent.FLAG_UPDATE_CURRENT
+                )
+              }
             }
 
             else -> {
               intent = Intent(this, BackgroundActionButtonHandler::class.java)
               updateIntent(intent, callback, extras, foreground, notId)
-              pIntent = PendingIntent.getBroadcast(
+              pIntent = if (Build.VERSION.SDK_INT >= 23) { PendingIntent.getBroadcast(
                 this, uniquePendingIntentRequestCode,
                 intent,
-                PendingIntent.FLAG_UPDATE_CURRENT
-              )
+                PendingIntent.FLAG_UPDATE_CURRENT | PendingIntent.FLAG_IMMUTABLE
+              ) } else {
+                PendingIntent.getBroadcast(
+                  this, uniquePendingIntentRequestCode,
+                  intent,
+                  PendingIntent.FLAG_UPDATE_CURRENT
+                )
+              }
             }
           }
           val actionBuilder = NotificationCompat.Action.Builder(
