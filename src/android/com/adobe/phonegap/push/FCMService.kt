@@ -448,7 +448,7 @@ class FCMService : FirebaseMessagingService() {
       this,
       requestCode,
       notificationIntent,
-      PendingIntent.FLAG_UPDATE_CURRENT | PendingIntent.FLAG_IMMUTABLE
+      PendingIntent.FLAG_UPDATE_CURRENT or PendingIntent.FLAG_IMMUTABLE
     ) } else {
       PendingIntent.getActivity(
             this,
@@ -474,7 +474,7 @@ class FCMService : FirebaseMessagingService() {
       this,
       requestCode,
       dismissedNotificationIntent,
-      PendingIntent.FLAG_CANCEL_CURRENT | PendingIntent.FLAG_IMMUTABLE
+      PendingIntent.FLAG_CANCEL_CURRENT or PendingIntent.FLAG_IMMUTABLE
     ) } else {
     PendingIntent.getBroadcast(
           this,
@@ -691,7 +691,7 @@ if (Build.VERSION.SDK_INT >= 23) {
                   this,
                   uniquePendingIntentRequestCode,
                   intent,
-                  PendingIntent.FLAG_ONE_SHOT | PendingIntent.FLAG_IMMUTABLE
+                  PendingIntent.FLAG_ONE_SHOT or PendingIntent.FLAG_IMMUTABLE
                 )
 } else {
                 PendingIntent.getActivity(
@@ -710,7 +710,7 @@ if (Build.VERSION.SDK_INT >= 23) {
                     this,
                     uniquePendingIntentRequestCode,
                     intent,
-                    PendingIntent.FLAG_ONE_SHOT | PendingIntent.FLAG_IMMUTABLE
+                    PendingIntent.FLAG_ONE_SHOT or PendingIntent.FLAG_IMMUTABLE
                   )
                 } else {
                   PendingIntent.getBroadcast(
@@ -729,7 +729,7 @@ if (Build.VERSION.SDK_INT >= 23) {
               pIntent = if (Build.VERSION.SDK_INT >= 23) { PendingIntent.getActivity(
                 this, uniquePendingIntentRequestCode,
                 intent,
-                PendingIntent.FLAG_UPDATE_CURRENT | PendingIntent.FLAG_IMMUTABLE
+                PendingIntent.FLAG_UPDATE_CURRENT or PendingIntent.FLAG_IMMUTABLE
               ) } else {
                 PendingIntent.getActivity(
                   this, uniquePendingIntentRequestCode,
@@ -745,7 +745,7 @@ if (Build.VERSION.SDK_INT >= 23) {
               pIntent = if (Build.VERSION.SDK_INT >= 23) { PendingIntent.getBroadcast(
                 this, uniquePendingIntentRequestCode,
                 intent,
-                PendingIntent.FLAG_UPDATE_CURRENT | PendingIntent.FLAG_IMMUTABLE
+                PendingIntent.FLAG_UPDATE_CURRENT or PendingIntent.FLAG_IMMUTABLE
               ) } else {
                 PendingIntent.getBroadcast(
                   this, uniquePendingIntentRequestCode,
